@@ -2,6 +2,8 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 
+import firebase from "../src/services/firebaseConections";
+
 
 export default function Index() {
   const route = useRouter();
