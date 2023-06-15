@@ -1,64 +1,61 @@
-//* Libraries imports
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
+import { z } from 'zod';
 
+import firebase from '../src/services/firebaseConections';
 
-export default function Index() {
-  const route = useRouter();
+const schema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+});
 
+export default function LoginScreen() {
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const handleLogin = async () => {
+    try {
+      schema.parse({ email, password });
+      await firebase.auth().signInWithEmailAndPassword(email, password)
+      // Login successful, navigate to the next screen
+      router.push('/cardList');
+    } catch (error) {
+      //@ts-ignore
+      setError(error?.message);
+      console.log(error);
+    }
+  };
 
   return (
-    <View style={styles.container}>
-      <View>
-        <Text style={styles.textWhite}>
-          Board List
-        </Text>
+    <View className="justify-center flex-1 bg-black">
+      <View className='mb-5'>
+        <Text className='text-4xl font-bold text-center text-white'>Login</Text>
       </View>
-      <View style={styles.space}>
-        <TouchableOpacity onPress={() => {
-          route.push('/addBoard');
-        }}>
-          <Text style={styles.link}>
-            Add Board
-          </Text>
+      <View className='flex flex-col gap-3 px-5'>
+        <TextInput
+          className='p-4 mb-3 text-base text-white border rounded-md border-neutral-300'
+          placeholder="Email"
+          placeholderTextColor="gray"
+          keyboardType="email-address"
+          value={email}
+          onChangeText={setEmail}
+        />
+        <TextInput
+          className='p-4 mb-3 text-base text-white border rounded-md border-neutral-300'
+          placeholder="Password"
+          placeholderTextColor="gray"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+        <TouchableOpacity className='items-center p-4 bg-blue-700 rounded-lg' onPress={handleLogin}>
+          <Text className='text-lg text-neutral-100'>Login</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => {
-          route.push('/editBoard');
-        }}>
-          <Text style={styles.link}>
-            edit Board
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => {
-          route.push('/boardDetails');
-        }}>
-          <Text style={styles.link}>
-            Board Details
-          </Text>
-        </TouchableOpacity>
+        {error ? <Text className='mt-2 text-red-500'>{error}</Text> : null}
       </View>
     </View>
-  )
+  );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  textWhite: {
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 28,
-  },
-  link: {
-    color: 'lightblue',
-    textAlign: 'center',
-    fontSize: 20,
-  },
-  space: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 12,
-  }
-})
