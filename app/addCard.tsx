@@ -3,10 +3,11 @@ import { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, FlatList, Image, Dimensions, Keyboard } from 'react-native';
 import { useRouter } from 'expo-router';
 
+//* Local types
 import type { APIResponse, CardData, Meta } from "../src/types/yugioh-api-response";
 
+//* Actions
 import addCardToDeck from '../src/actions/addCardToDeck';
-import firebase from "../src/services/firebaseConections";
 
 //* hooks
 import useCardList from '../src/hooks/useCardList';
