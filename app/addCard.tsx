@@ -8,8 +8,13 @@ import type { APIResponse, CardData, Meta } from "../src/types/yugioh-api-respon
 import addCardToDeck from '../src/actions/addCardToDeck';
 import firebase from "../src/services/firebaseConections";
 
+//* hooks
+import useCardList from '../src/hooks/useCardList';
+
 export default function Index() {
   const router = useRouter();
+
+  const cardList = useCardList();
 
   const [cards, setCards] = useState<CardData[]>([]);
   const [search, setSearch] = useState<string>('');
@@ -123,6 +128,8 @@ export default function Index() {
                     return;
                   }
                   return alert(`${item.name} added to your deck`);
+                }).finally(() => {
+                  cardList.refetch();
                 });
               }}
             >
