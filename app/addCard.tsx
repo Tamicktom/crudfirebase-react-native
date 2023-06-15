@@ -1,6 +1,6 @@
 //* Libraries imports
 import { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, TextInput, FlatList, Image, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, FlatList, Image, Dimensions, Keyboard } from 'react-native';
 import { useRouter } from 'expo-router';
 
 import type { APIResponse, CardData, Meta } from "../src/types/yugioh-api-response";
@@ -11,7 +11,11 @@ import firebase from "../src/services/firebaseConections";
 //* hooks
 import useCardList from '../src/hooks/useCardList';
 
-export default function Index() {
+const windowWidth = Dimensions.get('window').width;
+const cardWidth = windowWidth * 0.44; // 40% of the screen
+const cardHeight = (cardWidth * 614) / 421;
+
+export default function AddCard() {
   const router = useRouter();
 
   const cardList = useCardList();
@@ -35,10 +39,6 @@ export default function Index() {
     setActualPage((pagination.next_page_offset || 10) / 10);
   }, [pagination]);
 
-  const windowWidth = Dimensions.get('window').width;
-  const cardWidth = windowWidth * 0.44; // 40% of the screen
-  const cardHeight = (cardWidth * 614) / 421;
-
   const handleSearch = () => {
     console.log(search);
     fetch(`https://db.ygoprodeck.com/api/v7/cardinfo.php?&fname=${search}&num=10&offset=0`)
@@ -51,6 +51,9 @@ export default function Index() {
       })
       .catch((error) => {
         console.log(error);
+      })
+      .finally(()=>{
+        Keyboard.dismiss();
       })
   }
 
@@ -89,30 +92,31 @@ export default function Index() {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.holder}>
+    <View className='relative justify-center flex-1'>
+      <View className='flex flex-col items-center justify-center w-full p-4 bg-red-500'>
         <TextInput
-          style={styles.input}
+          className='w-full p-4 mb-3 text-lg border rounded-lg border-neutral-500 text-neutral-100 bg-neutral-950'
           placeholder="Card name"
           autoCorrect={false}
           onChangeText={setSearch}
         />
         <TouchableOpacity
           onPress={handleSearch}
-          style={styles.button}
+          className='items-center w-full p-4 bg-blue-700 rounded-lg'
         >
-          <Text style={styles.link}>Search</Text>
+          <Text className='text-2xl text-center text-blue-300'>Search</Text>
         </TouchableOpacity>
       </View>
 
-      <View style={styles.cardsHolder}>
+      <View className='flex items-center justify-center flex-1 pb-16 bg-blue-600'>
         <FlatList
           data={cards || []}
           renderItem={({ item, index }) => (
             <TouchableOpacity
-              style={[styles.cardContainer, {
+              style={{
                 marginRight: index % 2 === 0 ? 8 : 0,
-              }]}
+              }}
+              className='flex items-center justify-center mb-2'
               onPress={() => {
                 router.push({
                   pathname: 'cardDetail',
@@ -141,101 +145,22 @@ export default function Index() {
           )}
           keyExtractor={(item) => item.id + ''}
           numColumns={2}
-          contentContainerStyle={styles.flatListContentContainer}
+          contentContainerStyle={{
+            paddingHorizontal: 16
+          }}
         />
       </View>
 
-      <View style={styles.paginationHolder}>
+      <View className='absolute bottom-0 left-0 flex flex-row items-center justify-between w-full p-4 bg-red-800'>
         <TouchableOpacity onPress={previousPage}>
-          <Text style={styles.link}>Previous</Text>
+          <Text className='text-2xl text-center text-blue-300'>Previous</Text>
         </TouchableOpacity>
-        <Text style={styles.textWhite}>{pagination.current_rows * actualPage} / {pagination.total_rows}</Text>
+        <Text className='text-2xl text-center text-neutral-100'>{pagination.current_rows * actualPage} / {pagination.total_rows}</Text>
         <TouchableOpacity onPress={nextPage}>
-          <Text style={styles.link}>Next</Text>
+          <Text className='text-2xl text-center text-blue-300'>Next</Text>
         </TouchableOpacity>
       </View>
 
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    position: 'relative',
-  },
-  holder: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
-    width: '100%',
-    backgroundColor: 'darkred',
-  },
-  cardsHolder: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flex: 1,
-    backgroundColor: 'darkblue',
-    paddingBottom: 64,
-  },
-  cardContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  input: {
-    paddingVertical: 16,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 12,
-    paddingHorizontal: 16,
-    color: "white",
-    borderRadius: 8,
-    fontSize: 18,
-    width: '100%',
-    backgroundColor: 'black',
-  },
-  button: {
-    backgroundColor: 'blue',
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    width: '100%',
-  },
-  textWhite: {
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 28,
-  },
-  link: {
-    color: 'lightblue',
-    textAlign: 'center',
-    fontSize: 20,
-  },
-  space: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 12,
-  },
-  paginationHolder: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    width: '100%',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    backgroundColor: 'darkred',
-  },
-  flatListContentContainer: {
-    paddingHorizontal: 16,
-  },
-})
