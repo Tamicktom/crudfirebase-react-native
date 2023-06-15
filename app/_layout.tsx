@@ -4,6 +4,7 @@ import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
 import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
+import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -14,6 +15,8 @@ export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
   initialRouteName: 'index',
 };
+
+const queryClient = new QueryClient();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
@@ -40,6 +43,7 @@ function RootLayoutNav() {
 
   return (
     <>
+      <QueryClientProvider client={queryClient}>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack>
           <Stack.Screen name="index" options={{ headerShown: false }} />
@@ -51,6 +55,7 @@ function RootLayoutNav() {
           <Stack.Screen name="cardDetail" options={{ headerShown: true, headerTitle: "Details of the card" }} />
         </Stack>
       </ThemeProvider>
+        </QueryClientProvider>
     </>
   );
 }
