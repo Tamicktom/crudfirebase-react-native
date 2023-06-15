@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, Image, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, Image, Dimensions } from 'react-native';
 import { useRouter } from 'expo-router';
 
 import loadCardsFromDeck from '../src/actions/loadCardsFromDeck';
+import removeCardFromDeck from '../src/actions/removeCardFromDeck';
 import type { CardData } from '../src/types/yugioh-api-response';
 
 export default function CardList() {
@@ -20,15 +21,15 @@ export default function CardList() {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.textWhite}>
+    <View className='relative justify-center flex-1'>
+      <Text className='my-4 text-2xl text-center text-neutral-100'>
         {cards.length} cards in the deck
       </Text>
       <FlatList
         data={cards || []}
         renderItem={({ item }) => (
           <TouchableOpacity
-            style={styles.cardContainer}
+            className='items-center flex-1 mb-2'
             onPress={() => {
               router.push({
                 pathname: 'cardDetail',
@@ -36,6 +37,19 @@ export default function CardList() {
                   card: item.name,
                 }
               })
+            }}
+            onLongPress={() => {
+              removeCardFromDeck(item).then((cd) => {
+                if (cd.error) {
+                  alert(cd.message);
+                  return;
+                }
+                return alert(cd.message);
+              }).finally(() => {
+                loadCardsFromDeck().then((cd) => {
+                  setCards(cd);
+                });
+              });
             }}
           >
             <Image
@@ -46,45 +60,18 @@ export default function CardList() {
         )}
         keyExtractor={(item) => item.id + ''}
         numColumns={2}
-        contentContainerStyle={styles.flatListContentContainer}
+        contentContainerStyle={{ paddingHorizontal: 16 }}
       />
-      <TouchableOpacity style={styles.addCardButton}>
-        <Text style={styles.textWhite}>+</Text>
+      <TouchableOpacity
+        className='absolute flex items-center justify-center w-16 h-16 bg-blue-700 rounded-full bottom-4 right-4'
+        onPress={() => {
+          router.push({
+            pathname: 'addCard',
+          })
+        }}
+      >
+        <Text className='my-4 text-2xl text-center text-neutral-100'>+</Text>
       </TouchableOpacity>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    position: 'relative',
-  },
-  textWhite: {
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 28,
-    marginVertical: 16,
-  },
-  addCardButton: {
-    position: 'absolute',
-    bottom: 16,
-    right: 16,
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: 'red',
-    justifyContent: 'center',
-    alignItems: 'center',
-    display: 'flex',
-  },
-  cardContainer: {
-    flex: 1,
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  flatListContentContainer: {
-    paddingHorizontal: 16,
-  },
-});

@@ -40,15 +40,17 @@ export interface CardData {
   card_prices: CardPrice[];
 }
 
+export interface Meta {
+  current_rows: number;
+  total_rows: number;
+  rows_remaining: number;
+  total_pages: number;
+  pages_remaining: number;
+  next_page?: string;
+  next_page_offset?: number;
+}
+
 export interface APIResponse {
   data: CardData[];
-  meta?: {
-    current_rows: number;
-    total_rows: number;
-    rows_remaining: number;
-    total_pages: number;
-    pages_remaining: number;
-    next_page: string;
-    next_page_offset: number;
-  };
+  meta?: Meta;
 }

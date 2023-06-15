@@ -45,7 +45,7 @@ function RootLayoutNav() {
           <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-          <Stack.Screen name="addBoard" options={{ headerShown: true, headerTitle: "Add Board" }} />
+          <Stack.Screen name="addCard" options={{ headerShown: true, headerTitle: "Add Card" }} />
           <Stack.Screen name="cardList" options={{ headerShown: true, headerTitle: "Board Details" }} />
           <Stack.Screen name="editBoard" options={{ headerShown: true, headerTitle: "Edit Board" }} />
           <Stack.Screen name="cardDetail" options={{ headerShown: true, headerTitle: "Details of the card" }} />

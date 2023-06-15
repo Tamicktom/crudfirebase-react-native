@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { z } from 'zod';
 
@@ -23,19 +23,20 @@ export default function LoginScreen() {
       // Login successful, navigate to the next screen
       router.push('/cardList');
     } catch (error) {
+      //@ts-ignore
       setError(error?.message);
       console.log(error);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.tittleHolder}>
-        <Text style={styles.textWhite}>Login</Text>
+    <View className="justify-center flex-1 bg-black">
+      <View className='mb-5'>
+        <Text className='text-4xl font-bold text-center text-white'>Login</Text>
       </View>
-      <View style={styles.space}>
+      <View className='flex flex-col gap-3 px-5'>
         <TextInput
-          style={styles.input}
+          className='p-4 mb-3 text-base text-white border rounded-md border-neutral-300'
           placeholder="Email"
           placeholderTextColor="gray"
           keyboardType="email-address"
@@ -43,66 +44,18 @@ export default function LoginScreen() {
           onChangeText={setEmail}
         />
         <TextInput
-          style={styles.input}
+          className='p-4 mb-3 text-base text-white border rounded-md border-neutral-300'
           placeholder="Password"
           placeholderTextColor="gray"
           secureTextEntry
           value={password}
           onChangeText={setPassword}
         />
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Login</Text>
+        <TouchableOpacity className='items-center p-4 bg-blue-700 rounded-lg' onPress={handleLogin}>
+          <Text className='text-lg text-neutral-100'>Login</Text>
         </TouchableOpacity>
-        {error ? <Text style={styles.errorText}>{error}</Text> : null}
+        {error ? <Text className='mt-2 text-red-500'>{error}</Text> : null}
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: "black",
-  },
-  tittleHolder: {
-    marginBottom: 20,
-  },
-  textWhite: {
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 32,
-    fontWeight: 'bold',
-  },
-  input: {
-    paddingVertical: 16,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 12,
-    paddingHorizontal: 16,
-    color: "white",
-    borderRadius: 8,
-    fontSize: 18,
-  },
-  button: {
-    backgroundColor: 'blue',
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 18,
-  },
-  errorText: {
-    color: 'red',
-    marginTop: 10,
-  },
-  space: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 12,
-    paddingHorizontal: 20,
-  },
-});
