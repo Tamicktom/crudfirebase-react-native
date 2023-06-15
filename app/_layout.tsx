@@ -4,7 +4,7 @@ import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
 import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
-import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -44,18 +44,18 @@ function RootLayoutNav() {
   return (
     <>
       <QueryClientProvider client={queryClient}>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-          <Stack.Screen name="addCard" options={{ headerShown: true, headerTitle: "Add Card" }} />
-          <Stack.Screen name="cardList" options={{ headerShown: true, headerTitle: "Board Details" }} />
-          <Stack.Screen name="editBoard" options={{ headerShown: true, headerTitle: "Edit Board" }} />
-          <Stack.Screen name="cardDetail" options={{ headerShown: true, headerTitle: "Details of the card" }} />
-        </Stack>
-      </ThemeProvider>
-        </QueryClientProvider>
+        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <Stack>
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+            <Stack.Screen name="addCard" options={{ headerShown: true, headerTitle: "Add Card" }} />
+            <Stack.Screen name="cardList" options={{ headerShown: true, headerTitle: "Board Details" }} />
+            <Stack.Screen name="editBoard" options={{ headerShown: true, headerTitle: "Edit Board" }} />
+            <Stack.Screen name="cardDetail" options={{ headerShown: true, headerTitle: "Details of the card" }} />
+          </Stack>
+        </ThemeProvider>
+      </QueryClientProvider>
     </>
   );
 }

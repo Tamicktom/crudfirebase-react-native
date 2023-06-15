@@ -1,32 +1,28 @@
-import { useState, useEffect } from 'react';
+//* Libraries imports
 import { View, Text, TouchableOpacity, FlatList, Image, Dimensions } from 'react-native';
 import { useRouter } from 'expo-router';
 
-import loadCardsFromDeck from '../src/actions/loadCardsFromDeck';
 import removeCardFromDeck from '../src/actions/removeCardFromDeck';
-import type { CardData } from '../src/types/yugioh-api-response';
+
+//* hooks
+import useCardList from '../src/hooks/useCardList';
 
 export default function CardList() {
   const router = useRouter();
-  const [cards, setCards] = useState<CardData[]>([]);
+
+  const cardList = useCardList();
 
   const windowWidth = Dimensions.get('window').width;
   const cardWidth = windowWidth * 0.44; // 40% of the screen
   const cardHeight = (cardWidth * 614) / 421;
 
-  useEffect(() => {
-    loadCardsFromDeck().then((cd) => {
-      setCards(cd);
-    });
-  }, []);
-
   return (
     <View className='relative justify-center flex-1'>
       <Text className='my-4 text-2xl text-center text-neutral-100'>
-        {cards.length} cards in the deck
+        {cardList.data?.length} cards in the deck
       </Text>
       <FlatList
-        data={cards || []}
+        data={cardList.data || []}
         renderItem={({ item }) => (
           <TouchableOpacity
             className='items-center flex-1 mb-2'
@@ -46,9 +42,7 @@ export default function CardList() {
                 }
                 return alert(cd.message);
               }).finally(() => {
-                loadCardsFromDeck().then((cd) => {
-                  setCards(cd);
-                });
+                cardList.refetch();
               });
             }}
           >
