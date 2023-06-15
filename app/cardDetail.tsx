@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, Image, Dimensions } from 'react-native';
+import { View, Text, FlatList, Image, Dimensions } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 
 import getCardFromDb from '../src/actions/getCardsFromDb';
 import type { CardData } from '../src/types/yugioh-api-response';
 
 const windowWidth = Dimensions.get('window').width;
-const cardWidth = windowWidth * 0.44; // 40% of the screen
+const cardWidth = windowWidth * 0.44; // 44% of the screen
 const cardHeight = (cardWidth * 614) / 421;
 
 export default function Index(props: any) {
@@ -27,15 +27,25 @@ export default function Index(props: any) {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.cardName}>{card?.name}</Text>
-      <View style={styles.cardImagesContainer}>
+    <View className='relative justify-start flex-1 bg-neutral-950'>
+      <Text className='my-4 text-3xl font-bold text-center text-neutral-100'>{card?.name}</Text>
+      <View
+        className='mb-4'
+        style={{
+          height: cardHeight,
+        }}
+      >
         <FlatList
           data={card?.card_images || []}
           renderItem={({ item }) => (
-            <View style={styles.cardImageContainer}>
+            <View
+              className='mr-2 overflow-hidden rounded-lg'
+              style={{
+                width: cardWidth,
+                height: cardHeight,
+              }}>
               <Image
-                style={styles.cardImage}
+                className='flex-1'
                 source={{ uri: item.image_url }}
               />
             </View>
@@ -43,66 +53,19 @@ export default function Index(props: any) {
           keyExtractor={(item) => item.id + ""}
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.cardImagesContentContainer}
+          contentContainerStyle={{
+            alignItems: 'flex-start',
+            paddingHorizontal: 16,
+          }}
         />
       </View>
-      <View style={styles.cardInfoContainer}>
-        <Text style={styles.cardInfoText}>ID: {card?.id}</Text>
-        <Text style={styles.cardInfoText}>Type: {card?.type}</Text>
-        <Text style={styles.cardInfoText}>Race: {card?.race}</Text>
-        <Text style={styles.cardInfoText}>Frame Type: {card?.frameType}</Text>
+      <View className='mb-4'>
+        <Text className='my-2 text-lg text-center text-neutral-100'>ID: {card?.id}</Text>
+        <Text className='my-2 text-lg text-center text-neutral-100'>Type: {card?.type}</Text>
+        <Text className='my-2 text-lg text-center text-neutral-100'>Race: {card?.race}</Text>
+        <Text className='my-2 text-lg text-center text-neutral-100'>Frame Type: {card?.frameType}</Text>
       </View>
-      <Text style={styles.cardDescription}>{card?.desc}</Text>
+      <Text className='my-4 mb-4 text-lg text-center text-neutral-100'>{card?.desc}</Text>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    position: 'relative',
-    backgroundColor: '#232323',
-  },
-  cardName: {
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 28,
-    marginVertical: 16,
-  },
-  cardImagesContainer: {
-    height: cardHeight,
-    marginBottom: 16,
-  },
-  cardImageContainer: {
-    width: cardWidth,
-    height: cardHeight,
-    borderRadius: 8,
-    overflow: 'hidden',
-    marginRight: 8,
-  },
-  cardImage: {
-    flex: 1,
-    resizeMode: 'contain',
-  },
-  cardImagesContentContainer: {
-    alignItems: 'flex-start',
-    paddingHorizontal: 16,
-  },
-  cardInfoContainer: {
-    marginBottom: 16,
-  },
-  cardInfoText: {
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 18,
-    marginVertical: 8,
-  },
-  cardDescription: {
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 18,
-    marginBottom: 16,
-    marginHorizontal: 16,
-  },
-});
