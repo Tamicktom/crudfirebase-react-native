@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { z } from 'zod';
+import { EnvelopeSimple, Lock } from 'phosphor-react-native';
 
 import firebase from '../src/services/firebaseConections';
 
