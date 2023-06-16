@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, FlatList, Image, Dimensions, Keyboard } from 'react-native';
 import { useRouter } from 'expo-router';
+import { MagnifyingGlass, ArrowLeft, ArrowRight } from 'phosphor-react-native';
 
 //* Local types
 import type { APIResponse, CardData, Meta } from "../src/types/yugioh-api-response";
@@ -53,7 +54,7 @@ export default function AddCard() {
       .catch((error) => {
         console.log(error);
       })
-      .finally(()=>{
+      .finally(() => {
         Keyboard.dismiss();
       })
   }
@@ -94,22 +95,24 @@ export default function AddCard() {
 
   return (
     <View className='relative justify-center flex-1'>
-      <View className='flex flex-col items-center justify-center w-full p-4 bg-red-500'>
-        <TextInput
-          className='w-full p-4 mb-3 text-lg border rounded-lg border-neutral-500 text-neutral-100 bg-neutral-950'
-          placeholder="Card name"
-          autoCorrect={false}
-          onChangeText={setSearch}
-        />
-        <TouchableOpacity
-          onPress={handleSearch}
-          className='items-center w-full p-4 bg-blue-700 rounded-lg'
-        >
-          <Text className='text-2xl text-center text-blue-300'>Search</Text>
-        </TouchableOpacity>
+      <View className='absolute left-0 z-10 flex flex-col items-center justify-center w-full px-4 top-4'>
+        <View className='relative flex flex-row items-center justify-center'>
+          <TextInput
+            className='w-full h-16 p-4 mb-3 text-lg border rounded-lg border-neutral-500 text-neutral-100 bg-neutral-950'
+            placeholder="Card name"
+            autoCorrect={false}
+            onChangeText={setSearch}
+          />
+          <TouchableOpacity
+            onPress={handleSearch}
+            className='absolute right-4 top-4'
+          >
+            <MagnifyingGlass size={32} color='#fff' />
+          </TouchableOpacity>
+        </View>
       </View>
 
-      <View className='flex items-center justify-center flex-1 pb-16 bg-blue-600'>
+      <View className='flex items-center justify-center flex-1 bg-neutral-950'>
         <FlatList
           data={cards || []}
           renderItem={({ item, index }) => (
@@ -147,18 +150,20 @@ export default function AddCard() {
           keyExtractor={(item) => item.id + ''}
           numColumns={2}
           contentContainerStyle={{
-            paddingHorizontal: 16
+            paddingHorizontal: 16,
+            paddingTop: 96,
+            paddingBottom: 64,
           }}
         />
       </View>
 
-      <View className='absolute bottom-0 left-0 flex flex-row items-center justify-between w-full p-4 bg-red-800'>
+      <View className='absolute bottom-0 left-0 flex flex-row items-center justify-between w-full p-4 rounded-t-lg bg-neutral-800'>
         <TouchableOpacity onPress={previousPage}>
-          <Text className='text-2xl text-center text-blue-300'>Previous</Text>
+          <ArrowLeft size={24} color="white" />
         </TouchableOpacity>
-        <Text className='text-2xl text-center text-neutral-100'>{pagination.current_rows * actualPage} / {pagination.total_rows}</Text>
+        <Text className='text-2xl text-center text-neutral-400'>{pagination.current_rows * actualPage} / {pagination.total_rows}</Text>
         <TouchableOpacity onPress={nextPage}>
-          <Text className='text-2xl text-center text-blue-300'>Next</Text>
+          <ArrowRight size={24} color="white" />
         </TouchableOpacity>
       </View>
 
